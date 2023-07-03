@@ -3,8 +3,11 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = process.env.PORT || 3000;
+app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(bodyParser.json());
+
+var port = process.env.PORT || 8081;
 // Parse JSON request body
 app.use(bodyParser.json());
 
@@ -143,6 +146,21 @@ app.get('/records/:email', (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+app.use(function (req, res) {
+    // Invalid request
+    res.json({
+        error: {
+            'name': 'Error',
+            'status': 404,
+            'message': 'Invalid Request',
+            'statusCode': 404,
+            'stack': 'http://localhost:8081/'
+        },
+        message: 'Testing!'
+    });
 });
+
+// state the server
+app.listen(port);
+
+console.log('Server listening on port ' + port);
